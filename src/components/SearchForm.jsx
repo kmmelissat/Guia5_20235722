@@ -37,6 +37,7 @@ export default function SearchForm() {
 
     return (
         <form
+        onSubmit={handleSubmit}
         className="md:w-1/2 2xl:w-1/3 bg-orange-400 my-16 p-10 rounded-lg shadow space-y-6">
             <div className="space-y-4">
                 <label
@@ -77,7 +78,6 @@ export default function SearchForm() {
             <input
             type="submit"
             value="Buscar"
-            onSubmit={handleSubmit}
             className="cursor-pointer bg-orange-800 hover:bg-orange-900 text-white font-extrabold p-2 uppercase rounded-lg w-full">
             </input>
         </form>
