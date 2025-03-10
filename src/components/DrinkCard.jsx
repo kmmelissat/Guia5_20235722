@@ -7,8 +7,8 @@ export default function DrinkCard({drink}){
 
 
     return (
-        <div className=" shadow-lg">
-            <div className="overflow-hidden">
+        <div className="shadow-lg rounded-lg">
+            <div className="overflow-hidden rounded-tr-lg rounded-tl-lg">
                 <img src={drink.strDrinkThumb} 
                 alt={`Imagen de ${drink.strDrink}`} 
                 className="hover:scale-125 transition-transform hover:rotate-2"/>
