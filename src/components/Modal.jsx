@@ -1,33 +1,40 @@
-import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from
-    '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import { Fragment } from 'react';
 import { useAppStore } from '../store/useAppStore';
-export function Modal() {
-    const handleClickFavorite=useAppStore((state)=>state.handleClickFavorite)
-    const favoriteExist=useAppStore((state)=>state.favoriteExist)
+import { useNotificationStore } from '../store/notificationSlice';
 
+export function Modal() {
+    const handleClickFavorite = useAppStore((state) => state.handleClickFavorite);
+    const favoriteExist = useAppStore((state) => state.favoriteExist);
+    const addNotification = useNotificationStore((state) => state.addNotification);
 
     // Leyendo valores del store
-    const modal = useAppStore((state) => state.modal)
-    const closeModal = useAppStore((state) => state.closeModal)
-    const selectedRecipe = useAppStore((state) => state.selectedRecipe)
+    const modal = useAppStore((state) => state.modal);
+    const closeModal = useAppStore((state) => state.closeModal);
+    const selectedRecipe = useAppStore((state) => state.selectedRecipe);
 
     const renderIngredients = () => {
-        const ingredients = []
+        const ingredients = [];
         for (let i = 0; i < 10; i++) {
-            const ingredient = selectedRecipe[`strIngredient${i}`]
-            const measure = selectedRecipe[`strMeasure${i}`]
+            const ingredient = selectedRecipe[`strIngredient${i}`];
+            const measure = selectedRecipe[`strMeasure${i}`];
             if (ingredient && measure) {
                 ingredients.push(
                     <li key={i} className='text-lg font-normal'>
                         {ingredient} - {measure}
                     </li>
-                )
+                );
             }
         }
-        return ingredients
-    }
+        return ingredients;
+    };
 
+    const handleFavorite = () => {
+        const action = favoriteExist(selectedRecipe.idDrink) ? 'eliminada de' : 'agregada a';
+        handleClickFavorite(selectedRecipe);
+        addNotification(`Bebida ${action} favoritos`, 'success');
+        closeModal();
+    };
 
     return (
         <>
@@ -60,15 +67,14 @@ export function Modal() {
                                         {selectedRecipe.strDrink}
                                     </DialogTitle>
                                     <img src={selectedRecipe.strDrinkThumb} alt={`Imagen de ${selectedRecipe.strDrink}`} />
-                                    <DialogTitle as="h3" className="text-gray-900 text-2xl font-extrabold my-5 ">
+                                    <DialogTitle as="h3" className="text-gray-900 text-2xl font-extrabold my-5">
                                         Ingredientes y Cantidades
                                     </DialogTitle>
-                                    <ul> {renderIngredients()}</ul>
+                                    <ul>{renderIngredients()}</ul>
                                     <DialogTitle as="h3" className="text-gray-900 text-2xl font-extrabold my-5">
                                         Instrucciones
                                     </DialogTitle>
                                     <p className='text-lg'>{selectedRecipe.strInstructions}</p>
-
                                     <div className='mt-5 flex justify-between gap-4'>
                                         <button
                                             type='button'
@@ -77,15 +83,14 @@ export function Modal() {
                                         >
                                             Cerrar
                                         </button>
-                                        <button type='button' onClick={()=>{
-                                            handleClickFavorite(selectedRecipe)
-                                            closeModal()
-                                        }}
-                                            className='w-full rounded bg-orange-600 p-3 font-bold uppercase text-white shadow hover:bg-orange-500'>
-                                                {favoriteExist(selectedRecipe.idDrink)?'Eliminar favorito':'Agregar a Favoritos'}
+                                        <button
+                                            type='button'
+                                            onClick={handleFavorite}
+                                            className='w-full rounded bg-orange-600 p-3 font-bold uppercase text-white shadow hover:bg-orange-500'
+                                        >
+                                            {favoriteExist(selectedRecipe.idDrink) ? 'Eliminar favorito' : 'Agregar a Favoritos'}
                                         </button>
                                     </div>
-
                                 </DialogPanel>
                             </TransitionChild>
                         </div>
@@ -93,5 +98,5 @@ export function Modal() {
                 </Dialog>
             </Transition>
         </>
-    )
+    );
 }
